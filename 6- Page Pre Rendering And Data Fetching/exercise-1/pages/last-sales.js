@@ -1,19 +1,9 @@
-import { useEffect, useState } from "react";
+import useSWR from "swr";
 
-function LastSalesPage() {
-    const [sales, setSales] = useState();
-    const [isLoading, setIsLoading] = useState(false);
-
-    const fetchData = async () => {
-        setIsLoading(true);
-        try {
-            const response = await fetch(
-                "https://nextjs-course-d483f-default-rtdb.firebaseio.com/sales.json"
-            );
-            if (!response.ok) {
-                throw new Error("Failed to fetch sales data.");
-            }
-            const data = await response.json();
+const fetcher = (url) =>
+    fetch(url)
+        .then((r) => r.json())
+        .then((data) => {
             const transformedData = [];
             for (const key in data) {
                 transformedData.push({
@@ -22,28 +12,28 @@ function LastSalesPage() {
                     volume: data[key].volume,
                 });
             }
-            setSales(transformedData);
-        } catch (error) {
-            console.error(error);
-        }
-        setIsLoading(false);
-    };
+            return transformedData;
+        });
 
-    useEffect(() => {
-        fetchData();
-    }, []);
+function LastSalesPage() {
+
+    const { data, error, isLoading } = useSWR(
+        "https://nextjs-course-d483f-default-rtdb.firebaseio.com/sales.json",
+        fetcher
+    ); // we used fetcher because we needed to transform our data.
+
+
+    if (error) {
+        return <p>Failed to load</p>;
+    }
 
     if (isLoading) {
         return <h1>Loading...</h1>;
     }
 
-    if (!sales) {
-        return <p>No data yet!</p>;
-    }
-
     return (
         <ul>
-            {sales.map((sale) => (
+            {data.map((sale) => (
                 <li key={sale.id}>
                     {sale.username} - {sale.volume}
                 </li>
