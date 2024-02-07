@@ -5,6 +5,9 @@ function UserProfilePage(props) {
 export default UserProfilePage;
 
 export async function getServerSideProps(context) {
+    // getServerSideProps means this page should not be pre-generated on build time
+    // it serves UserIdPage() with props
+
     const { params, req, res } = context;
 
     return {
