@@ -22,6 +22,9 @@ async function getData() {
 };
 
 export async function getStaticProps(context) {
+    // getStaticProps means this page should be pre-generated on build time
+    // it serves ProductDetailPage() with props
+
     const { params } = context;
 
     const productId = params.pid;
@@ -41,6 +44,9 @@ export async function getStaticProps(context) {
 };
 
 export async function getStaticPaths() {
+    // getStaticPaths means dynamic paths for pages should be pre-generated on build time
+    // it serves getStaticProps() with existing ids
+
     const data = await getData();
 
     const ids = data.products.map(product => product.id);
