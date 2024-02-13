@@ -1,3 +1,4 @@
+// FIREBASE DATABASE SECTION
 export async function getAllEvents() {
   const response = await fetch(
     "https://nextjs-course-d483f-default-rtdb.firebaseio.com/events.json"
@@ -41,3 +42,20 @@ export async function getFilteredEvents(dateFilter) {
   return filteredEvents;
 }
 
+
+// MANGODB DATABASE SECTION
+export async function insertDocument(client, collection, document) {
+    const db = client.db();
+    const insertedDocument = await db.collection(collection).insertOne(document);
+    return insertedDocument;
+}
+
+export async function getAllDocuments(client, collection, find, sort) {
+    const db = client.db();
+    const documents = await db
+        .collection(collection)
+        .find(find)
+        .sort(sort)
+        .toArray();
+    return documents;
+}
