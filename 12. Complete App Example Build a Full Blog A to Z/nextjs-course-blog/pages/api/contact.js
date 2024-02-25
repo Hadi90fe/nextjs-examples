@@ -25,9 +25,11 @@ async function contactHandler(req, res) {
 
         //connecting to database
         let client;
+        const connectionString = `mongodb+srv://${process.env.mongodb_username}:${process.env.mongodb_password}@${process.env.mongodb_clustername}.5a5kygo.mongodb.net/${process.env.mongodb_database}?retryWrites=true&w=majority`;
+
         try {
             const MONGOPATH = process.env.MONGO;
-            client = await MongoClient.connect(MONGOPATH);
+            client = await MongoClient.connect(connectionString);
 
         } catch (error) {
             res.status(500).json({ message: 'Could not connect to database.' })
