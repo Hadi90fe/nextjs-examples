@@ -28,7 +28,6 @@ async function contactHandler(req, res) {
         const connectionString = `mongodb+srv://${process.env.mongodb_username}:${process.env.mongodb_password}@${process.env.mongodb_clustername}.5a5kygo.mongodb.net/${process.env.mongodb_database}?retryWrites=true&w=majority`;
 
         try {
-            const MONGOPATH = process.env.MONGO;
             client = await MongoClient.connect(connectionString);
 
         } catch (error) {
