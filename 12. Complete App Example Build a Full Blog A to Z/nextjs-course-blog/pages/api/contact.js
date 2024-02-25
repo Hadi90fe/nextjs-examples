@@ -1,4 +1,6 @@
-function contactHandler(req, res) {
+import { MongoClient } from 'mongodb';
+
+async function contactHandler(req, res) {
     if (req.method === "POST") {
         const { email, name, message } = req.body;
 
@@ -20,8 +22,30 @@ function contactHandler(req, res) {
             name,
             message
         }
-        console.log(newMessage);
-        res.status(201).json({message: 'Message sent successfully !', data: newMessage});
+
+        //connecting to database
+        let client;
+        try {
+            const MONGOPATH = process.env.MONGO;
+            client = await MongoClient.connect(MONGOPATH);
+
+        } catch (error) {
+            res.status(500).json({ message: 'Could not connect to database.' })
+        }
+        const db = client.db();
+
+        // adding data to a collection
+        try {
+            const result = await db.collection('messages').insertOne(newMessage);
+            newMessage.id = result.insertedId;
+        } catch (error) {
+            client.close();
+            res.status(500).json({ message: 'Storing message failed!' })
+            return;
+        }
+        client.close();
+
+        res.status(201).json({ message: 'Message sent successfully !', data: newMessage });
     }
 }
 
